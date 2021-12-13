@@ -17,7 +17,7 @@ class DDModel:#Details Deblurring Model
         X_shortcut = X
         
         X = Conv2D(filters = filter_num, kernel_size = (3, 3), strides = (1,1), padding = 'same')(X)
-        X = Activation('relu')(X)
+        X = Activation('sigmoid')(X)
         
         X = Conv2D(filters = filter_num, kernel_size = (3, 3), strides = (1,1), padding = 'same')(X)
         X = Add()([X, X_shortcut])
@@ -26,7 +26,7 @@ class DDModel:#Details Deblurring Model
 
     def __eblock(self,X,filter_num,stride):
         X = Conv2D(filters = filter_num, kernel_size = (5, 5), strides = (stride,stride), padding = 'same')(X)
-        X = Activation('relu')(X)
+        X = Activation('sigmoid')(X)
         for i in range(3):
             X = self.__resblock(X,filter_num)
         return X
@@ -35,7 +35,7 @@ class DDModel:#Details Deblurring Model
         for i in range(3):
             X = self.__resblock(X,filter_num*2)
         X = Conv2DTranspose(filter_num, kernel_size = (5, 5), strides = (stride, stride), padding='same')(X)
-        X = Activation('relu')(X)
+        X = Activation('sigmoid')(X)
         return X
 
     def __outblock(self,X,filter_num):
@@ -70,7 +70,7 @@ class DDModel:#Details Deblurring Model
 
     def __makeDense(self,X,growthRate):
         out = Conv2D(filters = growthRate, kernel_size = (3, 3), strides = (1,1), padding = 'same', use_bias=False)(X)
-        out = Activation('relu')(out)
+        out = Activation('sigmoid')(out)
         out = concatenate([X,out], axis=3)
         return out
 
